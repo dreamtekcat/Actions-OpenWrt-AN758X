@@ -23,7 +23,7 @@ mkdir -p "$PKG_DIR"
 # ---------------------------------------------------------
 ADD_AIROHA_NPU=true    # luci-app-airoha-npu：Airoha SoC 状态页（NPU/CPU/Frame Engine/PPE）
 
-ADD_PASSWALL=false     # luci-app-passwall（含依赖源）
+ADD_PASSWALL=true     # luci-app-passwall（含依赖源）
 ADD_OPENCLASH=false    # luci-app-openclash ⚠ 依赖 Ruby/Rust，编译极慢
 ADD_MOSDNS=false       # luci-app-mosdns + v2ray-geodata
 ADD_LUCKY=false        # luci-app-lucky（DDNS + socat）
@@ -32,9 +32,9 @@ ADD_OPENLIST=false     # luci-app-openlist2（alist/openlist 挂载）
 ADD_SMARTDNS=false     # luci-app-smartdns
 ADD_EASYTIER=false     # luci-app-easytier（另需 kmod-tun + easytier 本体，Rust 编译较慢）
 ADD_POWEROFF=false     # luci-app-poweroffdevice（关机）
-ADD_OWQ_WOL=false      # luci-app-owq-wol（网络唤醒，依赖 etherwake）
+ADD_OWQ_WOL=true      # luci-app-owq-wol（网络唤醒，依赖 etherwake）
 ADD_WATCHDOG=false     # luci-app-watchdog（看门狗，包在子目录，需特殊处理）
-ADD_TASKPLAN=false     # luci-app-taskplan（定时任务）
+ADD_TASKPLAN=true     # luci-app-taskplan（定时任务）
 ADD_OAF=false          # luci-app-oaf（应用过滤，含内核模块，高风险）
 ADD_LUCI_APP=true       # qwe3017/luci-app 仓库（monorepo）
                         #   ├─ luci-app-natmode     NAT 类型三选一（网络 → NAT 类型）
@@ -319,5 +319,13 @@ if [ -n "$(ls -A "$PKG_DIR" 2>/dev/null)" ]; then
 else
   echo "未启用任何第三方插件"
 fi
+
+# 移除上游可能冲突的老版 pon 栈组件
+rm -rf package/feeds/custom/luci-app-pon
+rm -rf package/feeds/custom/openwrt-pon-userspace
+
+# 添加 naoki66 的 OpenWrt_ONU_CONFIG 软件源
+echo 'src-git onu_config https://github.com' >> feeds.conf.default
+
 
 echo "🎉 diy-part1.sh 执行完毕"
