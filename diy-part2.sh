@@ -240,4 +240,7 @@ if [ -f "$OSREL_TPL" ]; then
   echo "✅ os-release 同步 -> $OSREL_LINE"
 fi
 
+./scripts/feeds update onu_config
+./scripts/feeds install -a -p onu_config
+
 echo "🎉 diy-part2.sh 执行完毕 (author=$FW_AUTHOR)"
